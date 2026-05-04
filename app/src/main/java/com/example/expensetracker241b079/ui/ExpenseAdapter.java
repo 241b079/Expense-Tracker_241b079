@@ -3,6 +3,7 @@ package com.example.expensetracker241b079.ui;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
@@ -15,8 +16,15 @@ import java.util.Locale;
 
 public class ExpenseAdapter extends ListAdapter<Expense, ExpenseAdapter.ExpenseViewHolder> {
 
-    protected ExpenseAdapter() {
+    private OnDeleteClickListener deleteClickListener;
+
+    public interface OnDeleteClickListener {
+        void onDeleteClick(Expense expense);
+    }
+
+    protected ExpenseAdapter(OnDeleteClickListener deleteClickListener) {
         super(DIFF_CALLBACK);
+        this.deleteClickListener = deleteClickListener;
     }
 
     private static final DiffUtil.ItemCallback<Expense> DIFF_CALLBACK = new DiffUtil.ItemCallback<Expense>() {
@@ -50,8 +58,13 @@ public class ExpenseAdapter extends ListAdapter<Expense, ExpenseAdapter.ExpenseV
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         holder.tvDate.setText(sdf.format(current.getDate()));
         
-        // Category name would normally be fetched from a map or categoryId
         holder.tvCategory.setText("Category ID: " + current.getCategoryId());
+
+        holder.btnDelete.setOnClickListener(v -> {
+            if (deleteClickListener != null) {
+                deleteClickListener.onDeleteClick(current);
+            }
+        });
     }
 
     class ExpenseViewHolder extends RecyclerView.ViewHolder {
@@ -59,6 +72,7 @@ public class ExpenseAdapter extends ListAdapter<Expense, ExpenseAdapter.ExpenseV
         private final TextView tvAmount;
         private final TextView tvDate;
         private final TextView tvCategory;
+        private final ImageButton btnDelete;
 
         private ExpenseViewHolder(View itemView) {
             super(itemView);
@@ -66,6 +80,7 @@ public class ExpenseAdapter extends ListAdapter<Expense, ExpenseAdapter.ExpenseV
             tvAmount = itemView.findViewById(R.id.tv_amount);
             tvDate = itemView.findViewById(R.id.tv_date);
             tvCategory = itemView.findViewById(R.id.tv_category);
+            btnDelete = itemView.findViewById(R.id.btn_delete);
         }
     }
 }

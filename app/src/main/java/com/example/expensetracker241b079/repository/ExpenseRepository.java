@@ -46,4 +46,8 @@ public class ExpenseRepository {
     public void insertCategory(Category category) {
         AppDatabase.databaseWriteExecutor.execute(() -> mCategoryDao.insert(category));
     }
+
+    public void deleteCategory(Category category) {
+        AppDatabase.databaseWriteExecutor.execute(() -> mCategoryDao.delete(category));
+    }
 }

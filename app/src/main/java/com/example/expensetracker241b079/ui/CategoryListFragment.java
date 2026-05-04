@@ -26,12 +26,20 @@ public class CategoryListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_category_list, container, false);
 
+        mViewModel = new ViewModelProvider(this).get(ExpenseViewModel.class);
+
         RecyclerView recyclerView = view.findViewById(R.id.rv_categories);
-        mAdapter = new CategoryAdapter();
+        mAdapter = new CategoryAdapter(category -> {
+            new AlertDialog.Builder(getContext())
+                .setTitle("Delete Category")
+                .setMessage("Are you sure you want to delete this category?")
+                .setPositiveButton("Delete", (dialog, which) -> mViewModel.deleteCategory(category))
+                .setNegativeButton("Cancel", null)
+                .show();
+        });
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mViewModel = new ViewModelProvider(this).get(ExpenseViewModel.class);
         mViewModel.getAllCategories().observe(getViewLifecycleOwner(), categories -> {
             mAdapter.submitList(categories);
         });

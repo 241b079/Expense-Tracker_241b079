@@ -3,6 +3,7 @@ package com.example.expensetracker241b079.ui;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
@@ -14,8 +15,15 @@ import java.util.Locale;
 
 public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.CategoryViewHolder> {
 
-    protected CategoryAdapter() {
+    private OnDeleteClickListener deleteClickListener;
+
+    public interface OnDeleteClickListener {
+        void onDeleteClick(Category category);
+    }
+
+    protected CategoryAdapter(OnDeleteClickListener deleteClickListener) {
         super(DIFF_CALLBACK);
+        this.deleteClickListener = deleteClickListener;
     }
 
     private static final DiffUtil.ItemCallback<Category> DIFF_CALLBACK = new DiffUtil.ItemCallback<Category>() {
@@ -46,18 +54,26 @@ public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.Categ
         holder.tvName.setText(current.getName());
         holder.tvBudget.setText(String.format(Locale.getDefault(), "Budget: $%.2f", current.getBudgetLimit()));
         holder.viewColor.setBackgroundColor(current.getColor());
+
+        holder.btnDelete.setOnClickListener(v -> {
+            if (deleteClickListener != null) {
+                deleteClickListener.onDeleteClick(current);
+            }
+        });
     }
 
     class CategoryViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvName;
         private final TextView tvBudget;
         private final View viewColor;
+        private final ImageButton btnDelete;
 
         private CategoryViewHolder(View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tv_category_name);
             tvBudget = itemView.findViewById(R.id.tv_budget_limit);
             viewColor = itemView.findViewById(R.id.view_color);
+            btnDelete = itemView.findViewById(R.id.btn_delete_category);
         }
     }
 }

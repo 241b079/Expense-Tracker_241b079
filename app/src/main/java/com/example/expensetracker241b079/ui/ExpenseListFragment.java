@@ -24,12 +24,13 @@ public class ExpenseListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_expense_list, container, false);
 
+        mViewModel = new ViewModelProvider(this).get(ExpenseViewModel.class);
+
         RecyclerView recyclerView = view.findViewById(R.id.rv_expenses);
-        mAdapter = new ExpenseAdapter();
+        mAdapter = new ExpenseAdapter(expense -> mViewModel.deleteExpense(expense));
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mViewModel = new ViewModelProvider(this).get(ExpenseViewModel.class);
         mViewModel.getAllExpenses().observe(getViewLifecycleOwner(), expenses -> {
             mAdapter.submitList(expenses);
         });

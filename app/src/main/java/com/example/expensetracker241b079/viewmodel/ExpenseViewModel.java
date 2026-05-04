@@ -28,4 +28,5 @@ public class ExpenseViewModel extends AndroidViewModel {
     public void updateExpense(Expense expense) { mRepository.updateExpense(expense); }
     public void deleteExpense(Expense expense) { mRepository.deleteExpense(expense); }
     public void insertCategory(Category category) { mRepository.insertCategory(category); }
+    public void deleteCategory(Category category) { mRepository.deleteCategory(category); }
 }
